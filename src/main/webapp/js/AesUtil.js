@@ -42,6 +42,17 @@ AesUtil.getKeyByLength=function (key, len){
     if(key.length > len){
         key = key.substr(0, len);
     }
+    try {
+        key = CryptoJS.enc.Utf8.parse(key).toString(CryptoJS.enc.Hex)
+    } catch (e) {
+        return "";
+    }
+    while(key.length < len){
+        key = key + key;
+    }
+    if(key.length > len){
+        key = key.substr(0, len);
+    }
     return key;
 };
 //
