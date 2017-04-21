@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- 编码 -->
+    <title>SJCL-AES加密解密demo</title>
+    <link href="/online/static/ysdk/css/global.css" rel="stylesheet" type="text/css">
+    <link href="/online/static/ysdk/css/kaoqian.css" rel="stylesheet" type="text/css">
+    <link type="text/css" rel="stylesheet" href="/online/static/css/dev_add.css" />
+    <link type="text/css" rel="stylesheet" href="/online/static/css/sticky-footer.css" />
+    <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="/online/static/css/ie_fix.css" />
+    <![endif]-->
+</head>
+<!--
+参考: https://github.com/mpetersen/aes-example
+-->
+<body>
+
+<!-- 头部开始 -->
+<div class="header wb100 dis-ib bb4-38bcd5">
+    <div class="w1050 m0-auto h110">
+        <a href="javascript:;" class="dis-ib fl mt-20">
+        <img src="/online/static/byks/images/logo.png" width="200" height="70" border="0" title="医博士在线考试平台！" />
+        </a>
+    </div>
+</div>
+<!--头部end-->
+
+<div class="content tc m34-auto">
+    <div class="wb100">
+        <label for="key">密码: </label>
+        <input id="key" class="b-ccc" >
+    </div>
+    <br/>
+    <div class=" wb100 tc m0-auto">
+        <div class="wb440"  style="display:inline-block;">
+            <h1>明文:</h1>
+            <textarea id="mingwen" rows="20" cols="60" class="b-ccc" style="display:inline-block" ></textarea>
+        </div>
+
+        <div class="w110 mt-60 m0-auto"  style="display:inline-block; height: 100px;">
+
+            <button class="encrypt_btn mt-60 cur_po br5">加密 &gt;&gt; </button>
+            <br/>
+            <button class="decrypt_btn mt-60 cur_po br5">解密 &lt;&lt; </button>
+        </div>
+        <div class="wb440"  style="display:inline-block;">
+            <h1>密文:</h1>
+            <textarea id="miwen" rows="20" cols="60" class="b-ccc" style="display:inline-block" ></textarea>
+        </div>
+
+    </div>
+</div>
+
+
+<div class=" m0-auto h110 footer tc">
+<div class="company_copy ">Copyright &copy; 2012 北京亿和博嘉教育科技有限公司 版权所有 京ICP备12019974号</div>
+</div>
+<script type="text/javascript" src="http://media.exam.yiboshi.com/online/static/js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/online/static/js/layer/layer.js"></script>
+<script type="text/javascript" src="/online/static/js/common-utils.js"></script>
+<script type="text/javascript" src="/online/static/js/getLanIP.js"></script>
+<script type="text/javascript" src="/online/static/js/cryptojs-3.0.2/aes.js"></script>
+<script type="text/javascript" src="/online/static/js/cryptojs-3.0.2/pbkdf2.js"></script>
+<script type="text/javascript" src="/online/static/js/cryptojs-3.0.2/AesUtil.js"></script>
+<script>
+    function getKeyByLength(key, len){
+        key = key || "noKeys";
+        //
+        len = len || 32;
+        while(key.length < len){
+            key = key + key;
+        }
+        if(key.length > len){
+            key = key.substr(0, len);
+        }
+        return key;
+    };
+    //
+    function encrypt(plainText, passphrase){
+        if(!plainText || !passphrase){
+            return "";
+        }
+        var iterationCount = 10;
+        var keySize = 128;
+        var iv = getKeyByLength(passphrase, 32);
+        var salt = getKeyByLength(passphrase, 32);
+
+        var aesUtil = new AesUtil(keySize, iterationCount);
+        var ciphertext = aesUtil.encrypt(salt, iv, passphrase, plainText);
+        //
+        return ciphertext;
+    };
+    function decrypt(cipherText, passphrase){
+        if(!cipherText || !passphrase){
+            return "";
+        }
+        var iterationCount = 10;
+        var keySize = 128;
+        var iv = getKeyByLength(passphrase, 32);
+        var salt = getKeyByLength(passphrase, 32);
+
+        var aesUtil = new AesUtil(keySize, iterationCount);
+        var mingwen = aesUtil.decrypt(salt, iv, passphrase, cipherText);
+        //
+        return mingwen;
+    };
+    //
+    $(function(){
+        //
+        var $encrypt_btn = $(".encrypt_btn");
+        var $decrypt_btn = $(".decrypt_btn");
+        var $mingwen = $("#mingwen");
+        var $miwen = $("#miwen");
+        var $key = $("#key");
+        //
+        $encrypt_btn.click(function(){
+            // 加密
+            var mingwen = $mingwen.val();
+            var key = $key.val();
+            //
+            if(!key){
+                layer.tips("密码不能为空", "#key");
+                return;
+            }
+            if(!mingwen){
+                layer.tips("明文不能为空", "#mingwen");
+                return;
+            }
+            //
+            var miwen = encrypt(mingwen, key);
+            //
+            $miwen.val(miwen);
+            $mingwen.val("");
+            $mingwen.focus();
+        });
+        $decrypt_btn.click(function(){
+            // 加密
+            //
+            var miwen = $miwen.val();
+            var key = $key.val();
+            //
+            if(!key){
+                layer.tips("密码不能为空", "#key");
+                return;
+            }
+            if(!miwen){
+                layer.tips("密文不能为空", "#miwen");
+                return;
+            }
+            var mingwen = decrypt(miwen, key);
+            //
+            $mingwen.val(mingwen);
+            $miwen.val("");
+            $miwen.focus();
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
