@@ -85,26 +85,26 @@ public class AesUtil {
             throw fail(e);
         }
     }
-    //
+
     private static String random(int length) {
         byte[] salt = new byte[length];
         new SecureRandom().nextBytes(salt);
         return hex(salt);
     }
     // 二进制(byte[]) 转换为 base 64 字符串
-    public static String base64(byte[] bytes) {
+    private static String base64(byte[] bytes) {
         return Base64.encodeBase64String(bytes);
     }
     //  base 64 字符串 转换为 二进制(byte[])
-    public static byte[] base64(String str) {
+    private static byte[] base64(String str) {
         return Base64.decodeBase64(str);
     }
     // 二进制(byte[]) 转换为 16进制格式的 字符串
-    public static String hex(byte[] bytes) {
+    private static String hex(byte[] bytes) {
         return Hex.encodeHexString(bytes);
     }
     //  16进制格式的 字符串 转换为 二进制(byte[])
-    public static byte[] hex(String str) {
+    private static byte[] hex(String str) {
         try {
             return Hex.decodeHex(str.toCharArray());
         }
@@ -118,6 +118,9 @@ public class AesUtil {
     }
     // 加密字符串; 内含特定的盐和偏移量;加解密需要一致
     public static String encryptoString(String plainText, String key){
+        if(null == plainText || null == key || plainText.isEmpty() || key.isEmpty()){
+            return "";
+        }
         String passphrase = key; // 密码
         int iterationCount = 10; // 迭代次数
         int keySize = 128; // key的长度
@@ -131,6 +134,9 @@ public class AesUtil {
     }
     // 解密字符串; 内含特定的盐和偏移量;加解密需要一致
     public static String decryptoString(String ciphertext, String key){
+        if(null == ciphertext || null == key || ciphertext.isEmpty() || key.isEmpty()){
+            return "";
+        }
         String passphrase = key; // 密码
         int iterationCount = 10; // 迭代次数
         int keySize = 128; // key的长度
@@ -148,6 +154,18 @@ public class AesUtil {
             key = "noKeys";
         }
         //
+        while(key.length() < len){
+            key = key + key;
+        }
+        if(key.length() > len){
+            key = key.substring(0, len);
+        }
+        // 转换为16进制
+        try {
+            key = hex(key.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         while(key.length() < len){
             key = key + key;
         }
