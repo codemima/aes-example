@@ -51,8 +51,8 @@ AesUtil.encryptString=function (plainText, passphrase){
     }
     var iterationCount = 10; // 迭代次数
     var keySize = 128; // 密钥长度
-    var iv = getKeyByLength(passphrase, 32); // 偏移量; initial-vector
-    var salt = getKeyByLength(passphrase, 32);// 盐
+    var iv = AesUtil.getKeyByLength(passphrase, 32); // 偏移量; initial-vector
+    var salt = AesUtil.getKeyByLength(passphrase, 32);// 盐
 
     var aesUtil = new AesUtil(keySize, iterationCount);
     var ciphertext = aesUtil.encrypt(salt, iv, passphrase, plainText);
@@ -65,8 +65,8 @@ AesUtil.decryptString=function (cipherText, passphrase){
     }
     var iterationCount = 10; // 迭代次数
     var keySize = 128; // 密钥长度
-    var iv = getKeyByLength(passphrase, 32); // 偏移量; initial-vector
-    var salt = getKeyByLength(passphrase, 32);// 盐
+    var iv = AesUtil.getKeyByLength(passphrase, 32); // 偏移量; initial-vector
+    var salt = AesUtil.getKeyByLength(passphrase, 32);// 盐
 
     var aesUtil = new AesUtil(keySize, iterationCount);
     var mingwen = aesUtil.decrypt(salt, iv, passphrase, cipherText);
