@@ -1,4 +1,4 @@
-Interoperable AES encryption with Java and JavaScript
+兼容 Java 和 JavaScript 的 AES 加密解密
 =====================================================
 
 AES implementations are available in many languages, including Java and JavaScript. In Java, the `javax.crypto.*` 
